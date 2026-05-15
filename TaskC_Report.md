@@ -8,7 +8,7 @@ Thomas Gosling - s3850201
 Jayden Bolth - s4104354  
 
 # Task A
-(19 marks in total) Car Sales Melbourne City has recently relocated from Richmond. The company consists of four main departments: Marketing, Administration, IT, and Sales. Currently, each of Marketing, Administration and Sales departments has 40 staff, while the fast-growing IT department has 60 staff. Assume that the company has been assigned the IP address 192.100.30.0. As a networking engineer at Car Sales Melbourne City, your task is to complete the following assignments.
+Car Sales Melbourne City has recently relocated from Richmond. The company consists of four main departments: Marketing, Administration, IT, and Sales. Currently, each of Marketing, Administration and Sales departments has 40 staff, while the fast-growing IT department has 60 staff. Assume that the company has been assigned the IP address 192.100.30.0. As a networking engineer at Car Sales Melbourne City, your task is to complete the following assignments.
 
 
 ## Task A1
@@ -80,10 +80,30 @@ IP address: 192.100.30.32
 192.100.30.32 falls within the IT department subnet (192.100.30.0/25), which has usable hosts ranging from 192.100.30.1 to 192.100.30.126, and a broadcast address of 192.100.30.127.
 
 ## Task A2
+#### Network Configuration
+The network's physical architecture consists of a router, a central core switch, and four departmental access switches for Marketing, Administration, Sales, and IT. This structure improves organisation, simplifies troubleshooting, and allows communication between departments through inter-VLAN routing configured on the router using router-on-a-stick. Each department contains its own server and employee PCs, while the IT department additionally contains a network printer. VLSM subnetting was used to allocate IP addresses efficiently according to departmental requirements while reducing address wastage and supporting future scalability.
+![Network Wiring](A2_Screenshots/589351077-0dba03e9-6df1-4772-94db-359b98ef4716.png)
+
+VLAN Segmentation:
+
+VLAN segmentation was implemented to logically separate each department into its own broadcast domain for improved security, performance, and network management. Separate VLANs reduce unnecessary broadcast traffic between departments and restrict direct Layer 2 communication, helping isolate departmental resources and minimise congestion. Trunk links between the core switch and departmental switches allow multiple VLANs to traverse the network while maintaining separation. Inter-VLAN communication is controlled through the router, allowing departments to securely access shared services such as DNS and the Sales web server when required.
+
+Successful ping responses confirm that network connectivity has been correctly established between devices across the network. When a device receives a reply to an ICMP ping request, it demonstrates that the source and destination devices can communicate successfully through the configured switches, VLANs, and router interfaces. The successful pings between devices in different departments verify that IP addressing, default gateways, VLAN trunking, and inter-VLAN routing are functioning correctly. The populated ARP table on the router further confirms that devices across multiple subnets have been discovered and are actively communicating within the network.
+
+#### Application Services and Demonstration
+The Sales server was configured to host a web application using the HTTP service, which operates over TCP. The web application was built using HTML. The application was tested from a PC in another department by entering the Sales server IP address, 192.100.31.2, into the web browser. The page loaded successfully, confirming that the Sales server’s HTTP service is active and reachable across the routed network. This also verifies that TCP-based application traffic can travel between departmental VLANs through the router.
+| Descriptions | Config Sales to UDP | Config IT Department to TCP|
+| UDP |---------|---------|
+| UDP |---------|---------|
+
+#### DNS Query and Demonstrations
+
 
 # Task B
 ---
 
 
 # References
----
+###### Task A Ref
+###### Task B Ref
+###### Task C Ref
