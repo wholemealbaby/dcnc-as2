@@ -167,10 +167,10 @@ The steps for the receiver to validate the FCS with CRC are as follows:
 ```mermaid
 graph TD
     %% Define standard box styles
-    classDef process fill:#1e1e1e,stroke:#61dafb,stroke-width:2px;
-    classDef decision fill:#2e2e2e,stroke:#ffd700,stroke-width:2px;
-    classDef terminal fill:#3c3c3c,stroke:#4caf50,stroke-width:2px,rx:10,ry:10;
-    classDef error fill:#3c3c3c,stroke:#f44336,stroke-width:2px,rx:10,ry:10;
+    classDef process fill:#e8f4f8,stroke:#0288d1,stroke-width:2px;
+    classDef decision fill:#fff8e1,stroke:#f9a825,stroke-width:2px;
+    classDef terminal fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,rx:10,ry:10;
+    classDef error fill:#fbe9e7,stroke:#d32f2f,stroke-width:2px,rx:10,ry:10;
 
     %% --- THE FLOW --- %%
 

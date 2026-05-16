@@ -521,33 +521,33 @@ const children = [
 
   h3("1. Network Configuration"),
   body("The network's architecture consists of a router, a central core switch, and switches for all four departments. Each department contains its own server and employee PCs; the IT department's network contains a printer. VLSM subnetting is used to allocate IP addresses efficiently according to departmental requirements while reducing address wastage and supporting future scalability, and communication between subnets is done through inter-VLAN routing, configured on the router using router-on-a-stick."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/589351077-0dba03e9-6df1-4772-94db-359b98ef4716.png"), 560, 350, "Figure 1: Network Architecture"),
+  ...imgOrNote(path.join(imgBase, "589351077-0dba03e9-6df1-4772-94db-359b98ef4716.png"), 560, 350, "Figure 1: Network Architecture"),
 
   body("VLAN segmentation is the basis of the subnet design. It separates each department into their own broadcast domain to reduce unnecessary broadcast traffic between departments, minimise congestion in direct Layer 2 communication and isolate departmental resources. Trunk links between the core switch and departmental switches allow multiple VLANs to traverse the network while maintaining separation."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592891048-51c21e46-a4dd-4660-8a1c-8247872342ef.png"), 380, 300, "Figure 2: VLAN Segmentation Configuration"),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592893774-a5f26add-2208-4109-9f4a-d2de23e59e34.png"), 380, 300, "Figure 3: VLAN Demonstration"),
+  ...imgOrNote(path.join(imgBase, "592891048-51c21e46-a4dd-4660-8a1c-8247872342ef.png"), 380, 300, "Figure 2: VLAN Segmentation Configuration"),
+  ...imgOrNote(path.join(imgBase, "592893774-a5f26add-2208-4109-9f4a-d2de23e59e34.png"), 380, 300, "Figure 3: VLAN Demonstration"),
 
   h3("2. Application Service Configuration"),
   body("Sales Server Web Application:"),
   body("The Sales server is configured to host a web application using the HTTP service, which operates over TCP. The web application was built with HTML. The application was tested from a PC in another department by entering the Sales server IP address, 192.100.31.5, into the web browser. The page loaded successfully, confirming that the Sales server's HTTP service is active and reachable across the routed network. This also verifies that TCP-based application traffic can travel between departmental VLANs through the router."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592907618-834180bd-589e-42d8-be84-01e8ab5a2f73.png"), 380, 280, "Figure 4: Sales Server HTTP Service Configuration"),
+  ...imgOrNote(path.join(imgBase, "592907618-834180bd-589e-42d8-be84-01e8ab5a2f73.png"), 380, 280, "Figure 4: Sales Server HTTP Service Configuration"),
   ...imageParagraph(IMGS.salesWebApp, 560, 380, "Figure 5: Sales Department Web Application (accessed from IT_PC1 via http://192.100.31.2)"),
 
   body("IT Server Web Application and UDP Simulation:"),
   body("The IT department server was configured to support simulated real-time communication using UDP traffic within Packet Tracer. A complex PDU was created from a client device in the Sales department and configured to send periodic UDP packets to the IT server every one second. The configuration used destination port 53 and a custom source port to demonstrate continuous UDP packet transmission between devices across VLANs."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592906022-326da72b-020c-4f47-a92c-01d34da623de.png"), 480, 320, "Figure 6: IT Server UDP Service Configuration"),
+  ...imgOrNote(path.join(imgBase, "592906022-326da72b-020c-4f47-a92c-01d34da623de.png"), 480, 320, "Figure 6: IT Server UDP Service Configuration"),
   body("The UDP simulation was verified in the Simulation Mode by monitoring packets arriving at the IT department server. The OSI Model view confirms UDP communication at Layer 4 using source port 50000 and destination port 53, while Layer 3 displays the source and destination IP addresses."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592906715-aee5ca6a-4e0c-4c3c-a2a8-cbc303729804.png"), 480, 320, "Figure 7: UDP Simulation Verification in Simulation Mode"),
+  ...imgOrNote(path.join(imgBase, "592906715-aee5ca6a-4e0c-4c3c-a2a8-cbc303729804.png"), 480, 320, "Figure 7: UDP Simulation Verification in Simulation Mode"),
 
   h3("3. DNS Query Demonstrations"),
   body("The IT department server was configured as a DNS server by creating an A Record that mapped the domain name www.sales.com to the Sales server IP address 192.100.31.2. A client device in the Marketing department then initiated a DNS query using the domain name rather than the direct IP address. A successful ping response confirmed that the DNS service correctly resolved the domain name to the destination server. The web application hosted on the Sales server was then successfully accessed through the web browser using the configured domain name, demonstrating functional DNS resolution and inter-VLAN connectivity."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592899863-612aa5c8-003a-4d63-bf80-82b992805130.png"), 380, 300, "Figure 8: IT Server DNS Configuration"),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592900200-32e52f55-3f63-4bb0-9234-0c00f8361ca2.png"), 380, 300, "Figure 9: Client DNS Query from Marketing PC"),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592900506-4c5f4535-4e5f-450a-9d9e-5d73e0e1cbac.png"), 380, 300, "Figure 10: DNS Connection Confirmation"),
+  ...imgOrNote(path.join(imgBase, "592899863-612aa5c8-003a-4d63-bf80-82b992805130.png"), 380, 300, "Figure 8: IT Server DNS Configuration"),
+  ...imgOrNote(path.join(imgBase, "592900200-32e52f55-3f63-4bb0-9234-0c00f8361ca2.png"), 380, 300, "Figure 9: Client DNS Query from Marketing PC"),
+  ...imgOrNote(path.join(imgBase, "592900506-4c5f4535-4e5f-450a-9d9e-5d73e0e1cbac.png"), 380, 300, "Figure 10: DNS Connection Confirmation"),
 
   body("Observing OSI Layers:"),
   body("The DNS query was monitored using Packet Tracer Simulation Mode to analyse packet flow across the OSI model. The captured packet shows DNS operating at Layer 7 and UDP communication at Layer 4 using source and destination port 53. Layer 3 displays the source and destination IP addresses, while Layer 2 shows the Ethernet frame and MAC address information used for local delivery."),
-  ...imgOrNote(path.join(imgBase, "A2_Screenshots/592902335-8301bd5d-326f-4b16-af9d-a6b590e888ba.png"), 520, 380, "Figure 11: DNS Packet OSI Layer Analysis in Simulation Mode"),
+  ...imgOrNote(path.join(imgBase, "592902335-8301bd5d-326f-4b16-af9d-a6b590e888ba.png"), 520, 380, "Figure 11: DNS Packet OSI Layer Analysis in Simulation Mode"),
 
   h3("4. Network Design Choices Explanation"),
   body("The network topology was designed using a hierarchical structure with a central core switch, connected to the switches for each department. This approach keeps the network organised by segmenting the departments, and makes it easier to manage and troubleshoot by limiting backbone connections to the router to one switch (central core). Each department was separated into its own VLAN to reduce unnecessary broadcast traffic and improve security by routing interdepartmental communication through the router. VLSM subnetting was utilised for efficient IP allocation according to departmental requirements, which reduced address wastage while supporting future scalability."),
