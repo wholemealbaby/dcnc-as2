@@ -19,38 +19,16 @@ Explain how the Frame Check Sequence (FCS) is used for error detection at the da
 | 3 pts        |                                                                                                    |
 t n
 ## Frame Checking Sequence Explanation
-The frame check sequence is a simple error detection method where an algorithm, in this case CRC, is used to validate the data integrity of the frame. The CRC algorithm takes the numeric binary value of the entire frame and divides it by a fixed binary divisor (aka Generator), determined by the network standard being used, appending the remainder (the FCS) to the trailer of the frame in the specific FCS field. It should be noted that the fixed binary divisor have a most significant bit of 1.
+The frame check sequence is a trailer field in a frame that is populated by an algorithm, in this case CRC, and the field value is used to validate the data integrity of the frame. The CRC algorithm takes the numeric binary value of the entire frame and divides it by a fixed binary divisor (aka Generator), determined by the network standard being used, appending the remainder (the FCS value) to the trailer of the frame in the specific FCS field. It should be noted that the fixed binary divisor have a most significant bit of 1.
 
 The instructions for the sender to calculate the FCS with CRC and append it to the frame are as follows:
 1. Append k - 1 zeroes to the data, where k is the length of the generators binary value. This will be referred to as the padded data.
-2. Take the first k bits of the padded data (this will be the **sliding window**) and perform polynomial division with the generator. If the most significant bit of the result is not 1, drop the leading zeroes and append the next n bits from the padded data to the result to form the next sliding window; where n is the number of leading zeroes dropped. Repeat this process on the new sliding window until there are no more bits to append from the padded data and a new sliding window of k bits where the most significant bit is 1 cannot be formed; this is the remainder and FCS.
-3. Replace the trailing zeroes in the padded data with the k - 1 least significant bits of the remainder to produce the final frame with the FCS added to the trailer
+2. Take the first k bits of the padded data (this will be the **sliding window**) and perform polynomial division with the generator. If the most significant bit of the result is not 1, drop the leading zeroes and append the next n bits from the padded data to the result to form the next sliding window; where n is the number of leading zeroes dropped. Repeat this process on the new sliding window until there are no more bits to append from the padded data and a new sliding window of k bits where the most significant bit is 1 cannot be formed; this is the remainder and FCS value.
+3. Replace the trailing zeroes in the padded data with the k - 1 least significant bits of the remainder to produce the final frame with the FCS value added to the trailer
 
 The steps for the receiver to validate the FCS with CRC are as follows:
 1. Perform sliding window polynomial division on the frame data (as explained in step 2 of the sender instructions) using the same generator which should be used ubiquitously by all network nodes.
-2. If the remainder from the polynomial division is zero then the FCS is valid and the frame can be accepted. If the remainder is none zero, silently discard the frame.
-
-
-
-
-
-
-
-
-
-
-## FCS Error Checking and Verification Between Sender and Receiver
-To differentiate between the original sender and intended recipient of the message and the sender and receiver of a frame between hops I want to make the following clarifications:
-- The **original sender** and **intended recipient** refers to the person or machine that the message was originally sent from or intended to be received by.
-- **Sender** and **receiver** refers to the node that sends or receives the frame in the current network hop.
-
-I also want to clarify that in this example the **original sender's network** standard **uses** the **CRC** algorithm
-### Steps
-1. When the data being sent passes through the **Media Access Control (MAC)** sublayer, the **sender** adds the **MAC address** and other headers to the frame.  
-2. The **original sender**'s Network Interface Card (NIC) **uses CRC** to execute **polynomial division** (XOR operations) **on** the numeric value of **the frame** (in binary) **using a fixed binary divisor** determined by the network standard (usually **32-bit CRC-32** for Ethernet and Wi-Fi). The resulting remainder (the **FCS**) is then appended to the appropriate field in the **trailer** of the frame.  
-3. The **frame then hops** between nodes **on the original sender's network**. As it arrives **at each switch**, the **receiver's switch** re-executes the **CRC** on the frame, and the calculated **FCS** is validated against the trailer's value to ensure data integrity. If the values do not match, the switch detects an error and **silently drops the frame**.  
-4. When the frame finally reaches the **original sender's** **router**, the **router** uses the **CRC** to validate the **FCS** once more before destroying the frame and **re-encapsulating** it to send to the **ISP** over the Internet Layer.  
-5. As the frame is transported from the **ISP** to the **intended recipient**, a **new FCS** is calculated **by the sender** at Layer 2 **after each completed Internet Layer hop** according to the network's chosen standard. Then, at each intermediate network node (**switch** or **receiver's NIC**), the **FCS** is validated **by the receiver** using **CRC** or the algorithm used by the network standard.
+2. If the remainder from the polynomial division is zero then the FCS value is valid and the frame can be accepted. If the remainder is none zero, the frame is silently discarded.
 
 ## Receiver Error Checking Progress Diagram
 ```mermaid

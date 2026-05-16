@@ -1,11 +1,33 @@
+
 # Data Communication And Net-Centric Computing Group Assignment 2
 ---
 ## Group member Details
 #### Group No. 33:
-Nikolas Papakalodoukas - s4094240  
-Alexandre Lee - s4090276  
-Thomas Gosling - s3850201  
-Jayden Bolth - s4104354  
+Nikolas Papakalodoukas - s4094240
+Alexandre Lee - s4090276
+Thomas Gosling - s3850201
+Jayden Bolth - s4104354
+
+## Submission Checklist
+
+| # | Requirement | Status | Double Checked / Verified |
+|---|-------------|--------|---------------------------|
+| 1 | Student names and IDs included | ✅ | |
+| 2 | Student ID appended in every device name in Packet Tracer screenshots | ❌ | |
+| 3 | Task A1: Two subnet designs with intuition (5 marks) | ✅ | |
+| 4 | Task A1: Design comparison with advantages/disadvantages (2 marks) | ✅ | |
+| 5 | Task A1: mod 2 student ID → last 8 bits → IP address (2 marks) | ✅ | |
+| 6 | Task A2: Network configuration with all devices (3 marks) | ✅ | |
+| 7 | Task A2: Sales server web app via TCP (3 marks) | ✅ | |
+| 8 | Task A2: IT server UDP real-time service (3 marks) | ✅ | |
+| 9 | Task A2: DNS query with domain name (2 marks) | ✅ | |
+| 10 | Task A2: DNS packet monitoring at L2/L3/L4 (2 marks) | ✅ | |
+| 11 | Task A2: Design choices explanation ≤250 words (2 marks) | ✅ | |
+| 12 | Task B.1: FCS explanation with 3-5 steps and diagram (3 marks) | ✅ | |
+| 13 | Task B.2: TCP/IP layer for FCS + integrity explanation (3 marks) | ✅ | |
+| 14 | Task B.3: TCP vs UDP trade-off example (2 marks) | ✅ | |
+| 15 | Task C: Clear structure, presentation, referencing (3 marks) | ✅ | |
+| 16 | Group member contributions table included | ❌ | |
 
 # Task A
 Car Sales Melbourne City has recently relocated from Richmond. The company consists of four main departments: Marketing, Administration, IT, and Sales. Currently, each of Marketing, Administration and Sales departments has 40 staff, while the fast-growing IT department has 60 staff. Assume that the company has been assigned the IP address 192.100.30.0. As a networking engineer at Car Sales Melbourne City, your task is to design and implement a new private network for the company.
@@ -127,9 +149,82 @@ The overall design improves scalability as the modular nature of the network, wi
 # Task B
 ---
 
+## B.1 
+> List 3-5 steps to explain how the frame check sequence (FCS) is used for error detection. Draw a figure to show how the receiver checks the error
+### Frame Checking Sequence Explanation
+The frame check sequence is a trailer field in a frame that is populated by an algorithm, in this case CRC, and the field value is used to validate the data integrity of the frame. The CRC algorithm takes the numeric binary value of the entire frame and divides it by a fixed binary divisor (aka Generator), determined by the network standard being used, appending the remainder (the FCS value) to the trailer of the frame in the specific FCS field. It should be noted that the fixed binary divisor have a most significant bit of 1 (Wikipedia 2026a).
+
+The instructions for the sender to calculate the FCS value with CRC and append it to the frame are as follows:
+1. Append k - 1 zeroes to the data, where k is the length of the generators binary value. This will be referred to as the padded data.
+2. Take the first k bits of the padded data (this will be the **sliding window**) and perform polynomial division with the generator. If the most significant bit of the result is not 1, drop the leading zeroes and append the next n bits from the padded data to the result to form the next sliding window; where n is the number of leading zeroes dropped. Repeat this process on the new sliding window until there are no more bits to append from the padded data and a new sliding window of k bits where the most significant bit is 1 cannot be formed; this is the remainder and FCS value.
+3. Replace the trailing zeroes in the padded data with the k - 1 least significant bits of the remainder to produce the final frame with the FCS value added to the trailer
+
+The steps for the receiver to validate the FCS with CRC are as follows:
+1. Perform sliding window polynomial division on the frame data (as explained in step 2 of the sender instructions) using the same generator which should be used ubiquitously by all network nodes.
+2. If the remainder from the polynomial division is zero then the FCS value is valid and the frame can be accepted. If the remainder is none zero, the frame is silently discarded.
+
+### Receiver Error Checking Progress Diagram
+
+```mermaid
+graph TD
+    %% Define standard box styles
+    classDef process fill:#1e1e1e,stroke:#61dafb,stroke-width:2px;
+    classDef decision fill:#2e2e2e,stroke:#ffd700,stroke-width:2px;
+    classDef terminal fill:#3c3c3c,stroke:#4caf50,stroke-width:2px,rx:10,ry:10;
+    classDef error fill:#3c3c3c,stroke:#f44336,stroke-width:2px,rx:10,ry:10;
+
+    %% --- THE FLOW --- %%
+
+    Start([Input: Incoming Frame Bits]):::terminal
+    --> Stream[Perform polynomial division on the full frame data using the network's configured generator]:::process
+
+    Stream
+    --> Compare{{Compare: Does Calculated Remainder<br/>== 0?}}:::decision
+
+    %% --- DECISION OUTPUTS --- %%
+
+    Compare -- "Yes (No Errors)" --> Accept([Output: Accept Frame<br/>Pass to next node]):::terminal
+    Compare -- "No (Error Detected)" --> Drop([Output: Discard Frame<br/>Silent Drop]):::error
+```
+
+---
+
+## B.2
+> Which layer of the TCP/IP model associates with the FCS? Based on the figure you created in Task 2.1, explain how to ensure integrity in that layer?
+
+The **Frame Check Sequence (FCS)** is a trailer field in frames of the **Network Access Layer** of the TCP/IP model, specifically in the **MAC (Media Access Control) sublayer**. The NIC hardware handles CRC computation and FCS validation on-the-fly as frames are transmitted and received; no higher-layer software is involved in the per-hop integrity check (GeeksforGeeks 2026).
+
+The B.1 diagram illustrates the receiver's error-checking process. Referring to that flow:
+1. FCS integrity is checked using the process defined in B.1 by **every intermediate Network Access Layer node** (switch, router interface) that receives the frame, not just at the final destination.
+2. The CRC algorithm is designed so that when the receiver divides the entire incoming bit-string (data + FCS) by the generator polynomial, a **zero remainder** signals an intact frame. This is the "Yes (No errors)" branch in the B.1 diagram, leading to the frame being accepted and passed up the stack.
+3. If the B.1 diagram's comparison yields a non-zero remainder (the "No (Corruption detected)" branch), the frame is silently dropped because the network access layer adheres to the end-to-end principle and is designed with a best effort quality of service policy (Wikipedia 2026b). The principle delegates reliability and security measures to the upper layers and communicating end nodes rather than the nodes contingent to Layer 2. Wired connections are usually dropped silently while wireless connections will locally retransmit within Layer 2 if an acknowledgment isn't received but will eventually give up if left unanswered. Recovery is then delegated to the relevant transport-layer protocol. If TCP, the receiving host's TCP stack will notice a gap in sequence numbers and trigger retransmission via duplicate ACKs or a timeout; if UDP, recovery is delegated to the application. 
+
+---
+
+## B.3 Transport Layer Protocol Trade-off
+> Give an example to discuss how to trade-off the reliable data transmission and minimize latency when selecting the Transport layer protocols.
+
+When transmitting data there is an inherent tradeoff between reliability and latency. For a connection to be reliable the sender must ensure the data is received uncorrupted. However, confirming this requires a response from the receiver, introducing latency that may increase depending on the size of the data. Now, let us consider the use case of a video conference livestream. If TCP was used, waiting for the receiver to verify that each packet is received uncorrupted would make continuously streaming video slow and conversation between participants impossible due unbearable latency. This is why UDP is the standard for live streaming; it drops the handshake, discards out of sequence packets and never retransmits, leaving the application to fill in the gaps. The absence of a handshake and sequence buffering significantly reduces latency but frames are discarded and lost more frequently. This tradeoff is necessary for the user experience in livestreaming, especially for two way communication. Conversely, the use of TCP for downloading a video would be more appropriate to make sure that all downloaded packets are captured and sequenced to form the complete file. UDP would not be appropriate for this type of download because the received data is not guaranteed to be complete and packets that are received out of sequence would be dropped and may not be retransmitted (Gough 2025).
+
+## Group Member Contributions
+
+| Group Member | Student ID | Contribution |
+|---|---|---|
+| Nikolas Papakalodoukas | s4094240 | |
+| Alexandre Lee | s4090276 | |
+| Thomas Gosling | s3850201 | |
+| Jayden Bolth | s4104354 | |
 
 # References
-###### Task A Ref
-[1] https://www.omnitron-systems.com/blog/what-is-a-vlan-virtual-lan-and-how-does-it-work 
-###### Task B Ref
-###### Task C Ref
+
+GeeksforGeeks 2026, *Difference between CRC and FCS*, GeeksforGeeks, accessed 15 May 2026. https://www.geeksforgeeks.org/computer-networks/what-is-the-difference-between-crc-and-fcs/
+
+Gough H 2025, 'UDP vs TCP: What's the difference?', *Norton*, 11 December, accessed 16 May 2026. https://us.norton.com/blog/wifi/udp-vs-tcp
+
+RIPE NCC 2026, *RIPE Document 504 — Address Space Managed by the RIPE NCC*, RIPE NCC, accessed 8 May 2026. https://www.ripe.net/publications/docs/ripe-504/
+
+RIPE NCC 2026b, *RIPE Document 484 — IPv4 Address Allocation and Assignment Policies*, diff from RIPE-622, RIPE NCC, accessed 8 May 2026. https://www.ripe.net/publications/docs/ripe-484/diff/ripe-622/
+
+Wikipedia 2026a, 'Cyclic redundancy check', *Wikipedia*, accessed 16 May 2026. https://en.wikipedia.org/wiki/Cyclic_redundancy_check
+
+Wikipedia 2026b, 'End-to-end principle', *Wikipedia*, accessed 16 May 2026. https://en.wikipedia.org/wiki/End-to-end_principle

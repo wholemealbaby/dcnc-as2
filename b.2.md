@@ -18,7 +18,7 @@ Identify which layer of the TCP/IP model is responsible for the FCS mechanism. U
 | 1 to >0 Pts    | Incorrect: Poor knowledge about integrity check. |
 
 
-The FCS mechanism operates at the **Network Access Layer** of the TCP/IP model. More specifically, it is implemented in the **MAC (Media Access Control) sublayer** of the Network Access Layer. The NIC hardware handles CRC computation and FCS validation on-the-fly as frames are transmitted and received; no higher-layer software is involved in the per-hop integrity check.
+The **Frame Check Sequence (FCS)** is a trailer field in frames of the **Network Access Layer** of the TCP/IP model, specifically in the **MAC (Media Access Control) sublayer**. The NIC hardware handles CRC computation and FCS validation on-the-fly as frames are transmitted and received; no higher-layer software is involved in the per-hop integrity check.
 
 The B.1 diagram illustrates the receiver's error-checking process. Referring to that flow:
 1. FCS integrity is checked using the process defined in B.1 by **every intermediate Network Access Layer node** (switch, router interface) that receives the frame, not just at the final destination.
