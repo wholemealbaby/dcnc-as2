@@ -1,4 +1,22 @@
 # B.1 Explain FCS
+**Marks:** 3 · **Tags:** theory, report
+
+**Description:**  
+Explain how the Frame Check Sequence (FCS) is used for error detection at the data link layer. List 3–5 clear steps describing how a sender computes the FCS and appends it to a frame, and how a receiver uses it to check for transmission errors. Create an original diagram illustrating the receiver's error-checking process.
+
+**Acceptance Criteria:**
+- 3 to 5 numbered steps are provided covering FCS generation and verification.
+- Steps clearly distinguish the sender's role (computing and appending FCS) from the receiver's role (recomputing and comparing).
+- The algorithm used (typically CRC) is identified by name.
+- A diagram is included showing the receiver's error-check process with labelled inputs and outputs.
+- The steps and diagram are consistent with each other.
+
+| Points        | Criteria                                                                                           |
+|---------------|----------------------------------------------------------------------------------------------------|
+| 3 to >2.0    | Correct: The steps are clear, and the figure complements the step for understanding error detection. |
+| 2 to >1.0    | Partial correct: The steps and the figure make sense for understanding error detection.             |
+| 1 to >0      | Incorrect: Very basic information on using FCS to check an error.                                   |
+| 3 pts        |                                                                                                    |
 
 ## Frame Checking Sequence Explanation
 The frame check sequence is a simple error detection method where the CRC algorithm is used to validate the data integrity of the frame. The CRC algorithm takes the numeric binary value of the entire frame and divides it by a fixed binary divisor, determined by the network standard being used, appending the remainder (the FCS) to the trailer of the frame in the specific FCS field.
